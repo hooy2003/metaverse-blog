@@ -1,0 +1,64 @@
+{
+  "constellations": [
+    {
+      "productID": 1,
+      "name": "白羊座",
+      "value": "白羊座"
+    },
+    {
+      "productID": 2,
+      "name": "金牛座",
+      "value": "金牛座"
+    },
+    {
+      "productID": 3,
+      "name": "雙子座",
+      "value": "雙子座"
+    },
+    {
+      "productID": 4,
+      "name": "巨蟹座",
+      "value": "巨蟹座"
+    },
+    {
+      "productID": 5,
+      "name": "獅子座",
+      "value": "獅子座"
+    },
+    {
+      "productID": 6,
+      "name": "處女座",
+      "value": "處女座"
+    },
+    {
+      "productID": 7,
+      "name": "天秤座",
+      "value": "天秤座"
+    },
+    {
+      "productID": 8,
+      "name": "天蠍座",
+      "value": "天蠍座"
+    },
+    {
+      "productID": 9,
+      "name": "射手座",
+      "value": "射手座"
+    },
+    {
+      "productID": 10,
+      "name": "摩羯座",
+      "value": "摩羯座"
+    },
+    {
+      "productID": 11,
+      "name": "水瓶座",
+      "value": "水瓶座"
+    },
+    {
+      "productID": 12,
+      "name": "雙魚座",
+      "value": "雙魚座"
+    }
+  ]
+}

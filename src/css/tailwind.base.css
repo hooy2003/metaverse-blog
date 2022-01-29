@@ -1,0 +1,139 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /*
+  * Menu Toggle style module
+  */
+  .__menuToggle {
+    @apply block relative z-10 cursor-pointer;
+  }
+  .__menuToggle span
+  {
+    @apply block relative w-5 mt-2 bg-white rounded-sm z-10;
+    height: 1px;
+    transform-origin: 4px 0px;
+    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+                background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+                opacity 0.55s ease;
+  }
+  .__menuToggle span:nth-last-child(1)
+  {
+    transform-origin: 0% 0%;
+  }
+  .__menuToggle span:nth-last-child(3)
+  {
+    @apply mt-0;
+  }
+  .__menuToggle.__show span:nth-last-child(1)
+  {
+    opacity: 1;
+    transform: rotate(45deg) translate(-11px, -12px);
+  }
+  .__menuToggle.__show span:nth-last-child(2)
+  {
+    opacity: 0;
+    transform: rotate(0deg) scale(0.2, 0.2);
+  }
+  .__menuToggle.__show span:nth-last-child(3)
+  {
+    transform: rotate(-45deg) translate(-10px, 8px);
+  }
+
+  /*
+  * Menu style module
+  */
+  .__menu__mask {
+    @apply bg-white absolute w-screen h-screen;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+  }
+  .__menu__mask.__show {
+    opacity: 0.3;
+  }
+  .__menu {
+    @apply absolute lg:w-96 w-48 list-none z-20 right-0 top-0 h-screen;
+    background-color: #272727;
+    transform-origin: 0% 0%;
+    transform: translate(100%, 0);
+    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+  }
+  .__menu.__show{
+    transform: translate(0, 0);
+  }
+  .__menu li
+  {
+    @apply px-3 text-2xl;
+  }
+}
+
+@layer base {
+  html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed, 
+  figure, figcaption, footer, header, hgroup, 
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+  }
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure, 
+  footer, header, hgroup, menu, nav, section {
+    display: block;
+  }
+  body {
+    font-family: Lato,Helvetica Neue,Arial,Helvetica,sans-serif;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  a {
+    text-decoration: none;
+    border: 0;
+  }
+
+  h1 {
+    font-size: 2rem;
+    @apply font-bold;
+  }
+  h3 {
+    font-size: 1.2rem;
+    @apply font-bold;
+  }
+  img {
+    @apply inline-block;
+  }
+}
