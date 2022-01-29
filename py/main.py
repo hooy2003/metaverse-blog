@@ -59,7 +59,3 @@ def prices_all():
 # @app.route('/cities/all', methods=['GET'])
 # def cities_all():
 #     return jsonify(cities)
-
-
-app.run()
-# 上雲
