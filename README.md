@@ -28,3 +28,8 @@ or
 npm install
 npm run serve
 ```
+
+要先開啟ChromeDriver
+運行 main.py
+touch igstories.py
+index.html 運行

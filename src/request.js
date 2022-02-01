@@ -3,6 +3,7 @@ import X2JS from './xml2json'
 
 window.REQ = axios.create({
   baseURL: 'https://api.allorigins.win/get?url=https://',
+  'Content-Type': 'application/json',
   timeout: 20000
 });
 
@@ -103,24 +104,25 @@ const getSearchFromYoutube = async()=>{
     return new Promise(resolve=>resolve({status:500}));
   }
 }
-
+// rsshub.app/picuki/profile/0xninja
 const getProfileFromeIG = async()=>{
   try {
     const res = await REQ.request({
-      url: `rsshub.app/picuki/profile/0xninja`,
+      // url: `metaverse-blog-api.herokuapp.com/igstories/juliawu94`,
+      url: `http://127.0.0.1:5000/igstories/juliawu94`,
       method: 'GET',
     })
 
     if(res.status==200)
     {
-      const { contents } = res.data;
-      const feed = new window.DOMParser().parseFromString(contents, "text/xml");
+      console.log('ig', JSON.parse(res.data.data.data) )
+      const data = JSON.parse(res.data.data.data);
 
-      let x2js = new X2JS();
-      let jsonObj = x2js.xml2json(feed);
-      console.log('ig', jsonObj)
-
-      return new Promise(resolve=>resolve({status:200,data:jsonObj}));
+      return new Promise(resolve=>resolve(
+        {
+          status:200,
+          data:data
+        }));
     } else{
       return new Promise(resolve=>resolve({status:res.status,data:res}));
     }

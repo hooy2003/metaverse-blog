@@ -10,7 +10,8 @@
     </div>
     <div class="p-1 border-l border-b border-black border-solid">
       <div v-if="thumbnail">
-        <img class="w-64" :src="thumbnail" alt="">
+        <img v-if="crossDown" :id="originPub" class="w-64" :src="crossDownImgSrc" alt="">
+        <img v-else class="w-64" :src="thumbnail" alt="">
       </div>
       <p v-if="content" class="break-all">{{content}}</p>
       <div v-html="description"></div>
@@ -22,7 +23,22 @@
   </div>
 </template>
 <script>
+import { onMounted } from 'vue'
+
 export default {
-  props: ['type', 'link', 'title', 'pubTime', 'thumbnail', 'content', 'description']
+  props: ['type', 'link', 'title', 'originPub', 'pubTime', 'thumbnail', 'content', 'description', 'crossDown'],
+  setup(props) {
+    let crossDownImgSrc = props.thumbnail
+
+    if(props.crossDown) {
+      // mounted 之後去拿新ＵＲＬ替換掉
+      onMounted(() => {
+        crossDownImgSrc = new cDg(props.originPub).view()
+        console.log('mounted! crossDownImgSrc', crossDownImgSrc)
+      })
+    }
+
+    return {crossDownImgSrc}
+  }
 }
 </script>

@@ -10,10 +10,12 @@
           :type="item.type"
           :link="item.link"
           :title="item.title"
+          :originPub="item.originPub"
           :pubTime="item.pubTime"
           :thumbnail="item?.thumbnail"
           :content="item.content"
           :description="item.description"
+          :crossDown="item.crossDown"
         />
         <!-- <PTTArticleModule 
           v-for="(item, index) in pttItems"
@@ -77,8 +79,7 @@ export default {
   async setup() {
     let allItems = ref([])
 
-
-    let [pttItems, twitterItems, redditItems] = await Promise.all([ptt_(), twitter_(), reddit_()]);
+    let [pttItems, redditItems, igItems] = await Promise.all([ptt_(), reddit_(), IG_()]);
 
     async function ptt_ () {
       const pttArticleList = await Request.getRssFromPtt();
@@ -93,27 +94,27 @@ export default {
         description: ''
       }));
       // 注意有無UTC
-      console.log('pttItems', pttItems)
+      // console.log('pttItems', pttItems)
 
       return pttItems
     }
-    async function twitter_ () {
-      const twitterList = await Request.getRssFromTwitter();
+    // async function twitter_ () {
+    //   const twitterList = await Request.getRssFromTwitter();
 
-      const twitterItems = [...twitterList.data.rss.channel.item].map((i) => ({
-        type: 'twitter',
-        link: i.link,
-        title: i.title,
-        originPub: i.pubDate,
-        pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
-        thumbnail: i.enclosure?i.enclosure._url:'',
-        content: '',
-        description: i.description
-      }));
+    //   const twitterItems = [...twitterList.data.rss.channel.item].map((i) => ({
+    //     type: 'twitter',
+    //     link: i.link,
+    //     title: i.title,
+    //     originPub: i.pubDate,
+    //     pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
+    //     thumbnail: i.enclosure?i.enclosure._url:'',
+    //     content: '',
+    //     description: i.description
+    //   }));
 
-      console.log('twitterItems', twitterItems)
-      return twitterItems
-    }
+    //   console.log('twitterItems', twitterItems)
+    //   return twitterItems
+    // }
     async function reddit_ () {
       const redditList = await Request.getRssFromReddit();
 
@@ -128,14 +129,34 @@ export default {
         description: ''
       }));
 
-      console.log('redditItems', redditItems)
+      // console.log('redditItems', redditItems)
       return redditItems
+    }
+
+    async function IG_ () {
+      const IGList = await Request.getProfileFromeIG();
+
+      const igItems = [...IGList.data.items].map((i,index) => ({
+        type: 'ig',
+        link: '',
+        title: i.owner.username,
+        originPub: i.owner.username+index,
+        pubTime: dayjs.unix(i.taken_at_timestamp).format("YYYY/MM/DD HH:mm"),
+        thumbnail: i.display_resources?i.display_resources[0].src:'',
+        content: '',
+        description: '',
+        crossDown: true
+      }));
+
+      console.log('igItems', igItems)
+
+      return igItems
     }
 
 
 
     // wait await all done
-    const total = await pttItems.concat(twitterItems, redditItems);
+    const total = await pttItems.concat(redditItems, igItems);
     // 按照時間去排列
     allItems = algorithm.insertionDate(total)
     // console.log('allItems', allItems)
@@ -150,20 +171,8 @@ export default {
     //   thumbnails: i.snippet.thumbnails.default.url,
     // }));
 
-    // let igItems = ref([])
-    // const igList = await Request.getProfileFromeIG();
-
-    // igItems = [...igList.data.rss.channel.item].map((i) => ({
-    //   link: i.link,
-    //   title: i.title,
-    //   pubDate: i.pubDate,
-    //   thumbnails: i.thumbnails.default.url,
-    // }));
-
     
 
-// console.log(pttItems, twitterItems, redditItems)
-    // return {pttItems, twitterItems, redditItems}
     return {allItems}
   }
 }

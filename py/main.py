@@ -1,20 +1,15 @@
-import flask
-from flask import jsonify
-from igstore import searchIGstory
+import json
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.config["DEBUG"] = True
 app.config["JSON_AS_ASCII"] = False
+CORS(app)
 
-igStore = searchIGstory()
-
-# test data
-cunt = {
-  'title': igStore[0].find_all("td")[1].get('data-table'),
-  'price': igStore[0].find_all("td")[1].get_text()
-}
-prices = [cunt]
+juliawu94_test = [{'name': 'juliawu94_test'}]
 # tpe = {
 #     "id": 0,
 #     "city_name": "台北",
@@ -52,10 +47,23 @@ prices = [cunt]
 def home():
     return "<h1>Hello NFT!</h1>"
 
-@app.route('/prices/all', methods=['GET'])
-def prices_all():
-    return jsonify(prices)
+# @app.route('/igstories/0xninja', methods=['GET'])
+# def igstories_0xninja():
+
+@app.route('/igstories/juliawu94', methods=['POST'])
+def createIgstories_juliawu94():
+    content = json.loads(request.data)
+    print(content)
+    global juliawu94_test 
+    juliawu94_test = content
+    return jsonify({'status': True})
+
+@app.route('/igstories/juliawu94', methods=['GET'])
+def getIgstories_juliawu94():
+    return jsonify({'status': 200, 'data':juliawu94_test})
 
 # @app.route('/cities/all', methods=['GET'])
 # def cities_all():
 #     return jsonify(cities)
+
+app.run()
