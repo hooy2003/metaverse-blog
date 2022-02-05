@@ -12,7 +12,8 @@
           :title="item.title"
           :originPub="item.originPub"
           :pubTime="item.pubTime"
-          :thumbnail="item?.thumbnail"
+          :thumbnail="item.thumbnail"
+          :videoSrc="item.videoSrc"
           :content="item.content"
           :description="item.description"
           :crossDown="item.crossDown"
@@ -84,15 +85,23 @@ export default {
     async function ptt_ () {
       const pttArticleList = await Request.getRssFromPtt();
 
-      const pttItems = [...pttArticleList.data.feed.entry].map((i) => ({
-        type: 'ptt',
-        link: i.link._href,
-        title: i.title,
-        originPub: i.published,
-        pubTime: dayjs(i.published).format("YYYY/MM/DD HH:mm"),
-        content: JSON.stringify(i.content.__text),
-        description: ''
-      }));
+      let pttItems = []
+
+      pttArticleList.data.feed.entry.map(
+        (i) => {
+          if(dayjs().diff(dayjs(i.published), 'second')<86400) {
+            pttItems.push({
+              type: 'ptt',
+              link: i.link._href,
+              title: i.title,
+              originPub: i.published,
+              pubTime: dayjs(i.published).format("YYYY/MM/DD HH:mm"),
+              content: i.content.__text,
+              description: ''
+            })
+          }
+        }
+      );
       // 注意有無UTC
       // console.log('pttItems', pttItems)
 
@@ -136,17 +145,34 @@ export default {
     async function IG_ () {
       const IGList = await Request.getProfileFromeIG();
 
-      const igItems = [...IGList.data.items].map((i,index) => ({
-        type: 'ig',
-        link: '',
-        title: i.owner.username,
-        originPub: i.owner.username+index,
-        pubTime: dayjs.unix(i.taken_at_timestamp).format("YYYY/MM/DD HH:mm"),
-        thumbnail: i.display_resources?i.display_resources[0].src:'',
-        content: '',
-        description: '',
-        crossDown: true
-      }));
+      let igItems = []
+      console.log('IGList', IGList, IGList.data?.data, IGList.data.data)
+      if(IGList.data?.data) {
+        // IGList.data?.data // icon 分界線
+        IGList.data.data.map((icon,index) =>
+          icon.data.items.map((i,index) => {
+            // let video_src = ''
+            // if(i.is_video) {
+            //   // video_resources = https://www.picuki.com/hosted-by-instagram/url=xxxxxx
+            //   video_src = 'https://api.allorigins.win/get?url=https://'.concat('', i.video_resources[0].src)
+            //   console.log('video_src', video_src)
+            // }
+            igItems.push({
+              type: 'ig',
+              link: '',
+              title: i.owner.username,
+              originPub: i.owner.username+index,
+              pubTime: dayjs.unix(i.taken_at_timestamp).format("YYYY/MM/DD HH:mm"),
+              thumbnail: i.display_resources?i.display_resources[0].src:'',
+              // videoSrc: video_src,
+              videoSrc: i.is_video?i.video_resources[0].src:'',
+              content: '',
+              description: '',
+              crossDown: true
+            })
+          })
+        );
+      }
 
       console.log('igItems', igItems)
 
@@ -170,8 +196,6 @@ export default {
     //   publishTime: i.snippet.publishTime,
     //   thumbnails: i.snippet.thumbnails.default.url,
     // }));
-
-    
 
     return {allItems}
   }

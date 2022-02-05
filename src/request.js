@@ -60,7 +60,7 @@ const getRssFromTwitter = async()=>{
 const getRssFromReddit = async()=>{
   try {
     const res = await REQ.request({
-      url: `www.reddit.com/r/NFT/.rss`,
+      url: `www.reddit.com/r/NFT/top.rss?sort=day`,
       method: 'GET',
     })
 
@@ -109,14 +109,14 @@ const getProfileFromeIG = async()=>{
   try {
     const res = await REQ.request({
       // url: `metaverse-blog-api.herokuapp.com/igstories/juliawu94`,
-      url: `http://127.0.0.1:5000/igstories/juliawu94`,
+      url: `https://metaverse-blog-api.herokuapp.com/igstories/?2`,
       method: 'GET',
     })
 
     if(res.status==200)
     {
-      console.log('ig', JSON.parse(res.data.data.data) )
-      const data = JSON.parse(res.data.data.data);
+      console.log('ig', res.data )
+      const data = res.data;
 
       return new Promise(resolve=>resolve(
         {
