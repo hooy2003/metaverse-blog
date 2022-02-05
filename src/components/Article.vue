@@ -94,8 +94,8 @@ export default {
     async function twitter_ () {
       try {
         const twitterList = await Request.getRssFromTwitter();
-        const titter_name = twitterList.rss.channel.image.title
-        const twitterItems = [...twitterList.rss.channel.item].map((i) => ({
+        const titter_name = twitterList.data.rss.channel.image.title
+        const twitterItems = [...twitterList.data.rss.channel.item].map((i) => ({
           type: 'twitter',
           link: i.link,
           title: titter_name,
