@@ -18,47 +18,13 @@
           :description="item.description"
           :crossDown="item.crossDown"
         />
-        <!-- <PTTArticleModule 
-          v-for="(item, index) in pttItems"
-          :key="item.key"
-          :title="item.title"
-          :link="item.link"
-          :published="item.published"
-          :content="item.content"
-        />
-        <TwitterArticleModule
-          v-for="(item, index) in twitterItems"
-          :key="item.key"
-          :title="item.title"
-          :link="item.link"
-          :pubDate="item.pubDate"
-          :description="item.description"
-          :content="item.content"
-        /> -->
-        <!-- <RedditArticleModule
-          v-for="(item, index) in redditItems"
-          :key="item.key"
-          :title="item.title"
-          :link="item.link"
-          :pubDate="item.pubDate"
-          :description="item.description"
-          :content="item.content"
-        />
-        <YoutubeModule
-          v-for="(item, index) in youtubeItems"
-          :key="item.key"
-          :title="item.title"
-          :link="item.link"
-          :publishTime="item.publishTime"
-          :thumbnails="item.thumbnails"
-        /> -->
       </div>
 
     </div>
   </div>
 </template>
 <script>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import Request from '../request'
 import ArticleModule from './utilities/ArticleModule'
 import PTTArticleModule from './utilities/PTTArticleModule'
@@ -80,7 +46,24 @@ export default {
   async setup() {
     let allItems = ref([])
 
-    let [pttItems, redditItems, igItems] = await Promise.all([ptt_(), reddit_(), IG_()]);
+    // let [pttItems, redditItems, twitterItems, igItems] = await Promise.all([ptt_(), reddit_(), twitter_(), IG_()]);
+    
+    let pttItems, redditItems, twitterItems, igItems
+
+    async function totalItems_ () {
+      try {
+        pttItems = await ptt_()
+        redditItems = await reddit_()
+        twitterItems = await twitter_()
+        igItems = await IG_()
+
+        // return pttItems.concat(redditItems, twitterItems, igItems)
+        return [pttItems, redditItems, twitterItems, igItems]
+      }
+      catch(err) {
+        console.log('catch', err)
+      }
+    }
 
     async function ptt_ () {
       const pttArticleList = await Request.getRssFromPtt();
@@ -107,23 +90,29 @@ export default {
 
       return pttItems
     }
-    // async function twitter_ () {
-    //   const twitterList = await Request.getRssFromTwitter();
 
-    //   const twitterItems = [...twitterList.data.rss.channel.item].map((i) => ({
-    //     type: 'twitter',
-    //     link: i.link,
-    //     title: i.title,
-    //     originPub: i.pubDate,
-    //     pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
-    //     thumbnail: i.enclosure?i.enclosure._url:'',
-    //     content: '',
-    //     description: i.description
-    //   }));
+    async function twitter_ () {
+      try {
+        const twitterList = await Request.getRssFromTwitter();
+        const titter_name = twitterList.rss.channel.image.title
+        const twitterItems = [...twitterList.rss.channel.item].map((i) => ({
+          type: 'twitter',
+          link: i.link,
+          title: titter_name,
+          originPub: i.pubDate,
+          pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
+          content: i.description
+        }));
 
-    //   console.log('twitterItems', twitterItems)
-    //   return twitterItems
-    // }
+        console.log('twitterItems', twitterItems)
+        return twitterItems
+
+      }
+      catch(err) {
+        console.log('推特rss 掛了')
+      }
+    }
+
     async function reddit_ () {
       const redditList = await Request.getRssFromReddit();
 
@@ -180,22 +169,23 @@ export default {
     }
 
 
-
     // wait await all done
-    const total = await pttItems.concat(redditItems, igItems);
-    // 按照時間去排列
-    allItems = algorithm.insertionDate(total)
-    // console.log('allItems', allItems)
-
-    // let youtubeItems = ref([])
-    // const youtubeList = await Request.getSearchFromYoutube();
-
-    // youtubeItems = [...youtubeList.data.items].map((i) => ({
-    //   link: `https://www.youtube.com/watch?v=`+i.id.videoId,
-    //   title: i.snippet.title,
-    //   publishTime: i.snippet.publishTime,
-    //   thumbnails: i.snippet.thumbnails.default.url,
-    // }));
+    async function mergeAllItem () {
+      try {
+        const total = await totalItems_()
+        let defaultAll = []
+        total.forEach((item=>{
+          if(item) {
+            defaultAll = defaultAll.concat(item)
+          }
+        }))
+        // 按照時間去排列
+        allItems.value = algorithm.insertionDate(defaultAll)
+        console.log('allItems', allItems)
+      } catch (error) {
+      }
+    }
+    await mergeAllItem()
 
     return {allItems}
   }

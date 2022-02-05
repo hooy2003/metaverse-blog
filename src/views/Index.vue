@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { onErrorCaptured } from 'vue'
 import Article from '../components/Article'
 
 export default {
@@ -30,5 +31,11 @@ export default {
   components: {
     Article
   },
+  setup(){
+    onErrorCaptured((error)=> {
+      console.log("其他的錯誤處理：", error);
+    })
+    return {}
+  }
 }
 </script>

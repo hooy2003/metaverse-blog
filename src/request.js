@@ -35,7 +35,8 @@ const getRssFromPtt = async()=>{
 const getRssFromTwitter = async()=>{
   try {
     const res = await REQ.request({
-      url: `rss.app/feeds/vbAS8PT5icBz8KSm.xml`,
+      // rss.app/feeds/vbAS8PT5icBz8KSm.xml
+      url: `nitter.net/elonmusk/rss`,
       method: 'GET',
     })
 
