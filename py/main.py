@@ -42,15 +42,14 @@ class IG_stories(MethodView):
         global ig_stories_list
 
         # 類似js 的 find [data for data in sample_list if data.get('key')==1][0]
-        for index,icon in enumerate(ig_stories_list):
-          if([icon.get('username')==username][0]):
+        for index,kol in enumerate(ig_stories_list):
+          if([kol.get('username')==username][0]):
             print('已有',username,'覆蓋掉', )
-            # print('那原本的list是', ig_stories_list)
-            ig_stories_list[index] = {'username':username, 'data': content.get('data')}
+            ig_stories_list[index] = {'username':username, 'data': content.get('body')}
             return jsonify({'status': 200})
         # 如果不是 已有的資料則新增一筆該使用者的
         print('沒有，新增一筆', username)
-        ig_stories_list.append( {'username':username, 'data': content.get('data')} )
+        ig_stories_list.append( {'username':username, 'data': content.get('body')} )
         return jsonify({'status': 200})
 
 

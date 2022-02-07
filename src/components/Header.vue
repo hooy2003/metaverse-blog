@@ -26,16 +26,16 @@
       </router-link>
     </div>
 
-    <div 
+    <!-- <div 
       class="flex justify-center items-center w-16 h-full z-50"
       :class="{
         'bg-transparent':menuIsShow,
         'bg-mask-3/4':!menuIsShow,
         'text-white':route.path!='/page',
       }"
-    >
+    > -->
       <!-- menuToggle -->
-      <div 
+      <!-- <div 
         class="__menuToggle"
         :class="{'__show':menuIsShow}"
         @click="changeMenuShow"
@@ -44,10 +44,10 @@
         <span></span>
         <span></span>
       </div>
-    </div>
+    </div> -->
     
     <!-- menu -->
-    <div 
+    <!-- <div 
       class="absolute w-full h-screen text-white overflow-hidden"
       :class="{'pointer-events-auto':menuIsShow, 'pointer-events-none':!menuIsShow}"
     >
@@ -76,7 +76,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div> -->
   </nav>
 </template>
 <script>
