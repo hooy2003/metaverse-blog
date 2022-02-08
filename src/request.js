@@ -116,8 +116,8 @@ const getProfileFromeIG = async()=>{
 
     if(res.status==200)
     {
-      console.log('ig', res.data )
-      const data = res.data;
+      console.log('ig', JSON.parse(res.data.data[0].data) )
+      const data = JSON.parse(res.data.data[0].data);
 
       return new Promise(resolve=>resolve(
         {

@@ -16,7 +16,6 @@
           :videoSrc="item.videoSrc"
           :content="item.content"
           :description="item.description"
-          :crossDown="item.crossDown"
         />
       </div>
 
@@ -52,9 +51,9 @@ export default {
 
     async function totalItems_ () {
       try {
-        pttItems = await ptt_()
-        redditItems = await reddit_()
-        twitterItems = await twitter_()
+        // pttItems = await ptt_()
+        // redditItems = await reddit_()
+        // twitterItems = await twitter_()
         igItems = await IG_()
 
         // return pttItems.concat(redditItems, twitterItems, igItems)
@@ -135,30 +134,21 @@ export default {
       const IGList = await Request.getProfileFromeIG();
 
       let igItems = []
-      console.log('IGList', IGList, IGList.data?.data, IGList.data.data)
-      if(IGList.data?.data) {
-        // IGList.data?.data // icon 分界線
-        IGList.data.data.map((icon,index) =>
-          icon.data.items.map((i,index) => {
-            // let video_src = ''
-            // if(i.is_video) {
-            //   // video_resources = https://www.picuki.com/hosted-by-instagram/url=xxxxxx
-            //   video_src = 'https://api.allorigins.win/get?url=https://'.concat('', i.video_resources[0].src)
-            //   console.log('video_src', video_src)
-            // }
-            igItems.push({
-              type: 'ig',
-              link: '',
-              title: i.owner.username,
-              originPub: i.owner.username+index,
-              pubTime: dayjs.unix(i.taken_at_timestamp).format("YYYY/MM/DD HH:mm"),
-              thumbnail: i.display_resources?i.display_resources[0].src:'',
-              // videoSrc: video_src,
-              videoSrc: i.is_video?i.video_resources[0].src:'',
-              content: '',
-              description: '',
-              crossDown: true
-            })
+      console.log('IGList', IGList, IGList.data.reel)
+      if(IGList.data?.reel) {
+        IGList.data.reel.items.map((i,index) =>
+          igItems.push({
+            type: 'ig',
+            link: '',
+            title: i.user.username,
+            originPub: i.user.username+index,
+            pubTime: dayjs.unix(i.taken_at).format("YYYY/MM/DD HH:mm"),
+            // isVideo or mediatype media_type
+            // candidates[3] == 480x853
+            thumbnail: i.media_type==1?i.image_versions2.candidates[3].url:'',
+            videoSrc: i.media_type==2?'':'',
+            content: '',
+            description: '',
           })
         );
       }
