@@ -4,7 +4,7 @@ import X2JS from './xml2json'
 window.REQ = axios.create({
   baseURL: 'https://api.allorigins.win/get?url=https://',
   'Content-Type': 'application/json',
-  timeout: 20000
+  timeout: 10000
 });
 
 const getRssFromPtt = async()=>{
@@ -110,12 +110,12 @@ const getProfileFromeIG = async()=>{
   try {
     const res = await REQ.request({
       // url: `metaverse-blog-api.herokuapp.com/igstories/juliawu94`,
-      url: `https://metaverse-blog-api.herokuapp.com/igstories/?2`,
+      url: `https://metaverse-blog-api.herokuapp.com/igstories/`,
       method: 'GET',
     })
 
     if(res.status==200)
-    {
+    { 
       console.log('ig', JSON.parse(res.data.data[0].data) )
       const data = JSON.parse(res.data.data[0].data);
 

@@ -51,12 +51,11 @@ export default {
 
     async function totalItems_ () {
       try {
-        // pttItems = await ptt_()
-        // redditItems = await reddit_()
-        // twitterItems = await twitter_()
+        pttItems = await ptt_()
+        redditItems = await reddit_()
+        twitterItems = await twitter_()
         igItems = await IG_()
 
-        // return pttItems.concat(redditItems, twitterItems, igItems)
         return [pttItems, redditItems, twitterItems, igItems]
       }
       catch(err) {
@@ -134,7 +133,7 @@ export default {
       const IGList = await Request.getProfileFromeIG();
 
       let igItems = []
-      console.log('IGList', IGList, IGList.data.reel)
+      console.log('IGList', IGList, IGList.data?.reel)
       if(IGList.data?.reel) {
         IGList.data.reel.items.map((i,index) =>
           igItems.push({
@@ -146,7 +145,8 @@ export default {
             // isVideo or mediatype media_type
             // candidates[3] == 480x853
             thumbnail: i.media_type==1?i.image_versions2.candidates[3].url:'',
-            videoSrc: i.media_type==2?'':'',
+            // video_versions[2] == 480x854
+            videoSrc: i.media_type==2?i.video_versions[2].url:'',
             content: '',
             description: '',
           })

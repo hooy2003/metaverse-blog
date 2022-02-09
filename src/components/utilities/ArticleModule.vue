@@ -6,19 +6,26 @@
       >
         {{title}}
       </h3>
-      <p><span class="font-bold">{{type}} -</span>{{pubTime}}</p>
+      <p>
+        <span 
+          class="font-bold"
+          :class="{ 
+            'text-rose-500': type == 'ig',
+          }"
+        >{{type}} -</span>
+        {{pubTime}}
+      </p>
     </div>
     <div class="p-1 border-l border-b border-black border-solid">
-      <div v-if="thumbnail">
+      <div>
         <img v-if="type=='ig'" :id="originPubImgID" class="w-64" :src="crossDownImgSrc" alt="">
         <img v-else class="w-64" :src="thumbnail" alt="">
       </div>
       
-        <p v-if="type=='ig'">video-test-1</p>
-        <video v-if="type=='ig'" ref="myVideo" class="video-js vjs-big-play-centered"></video>
+      <video v-if="type=='ig'&&videoSrc" ref="myVideo" class="video-js vjs-big-play-centered"></video>
+      
       <p v-html="content" class="break-all"></p>
       <div v-html="description"></div>
-      <hr class="w-16">
       <div class="text-right">
         <a class="underline break-all">{{link}}</a>
       </div>
@@ -48,7 +55,9 @@ export default {
     onMounted(() => {
       if(props.type=='ig') {
         // ig 圖片跨域
-        crossDownImgSrc.value = new cDg(originPubImgID.value).view()
+        if(originPubImgID.value) {
+          crossDownImgSrc.value = new cDg(originPubImgID.value).view()
+        }
 
         // ig 影片處理
         // 可視範圍內才播放
@@ -60,24 +69,27 @@ export default {
 
         // 直接吃iG路徑好像可以
         // 這邊先寫死路徑，先測試滑到後才播放 0208:15
-        let url = `https://instagram.ftpe7-1.fna.fbcdn.net/o1/v/t16/f1/m38/6B4AA51061A21D1FF076C02B2CD9BEB6_video_dashinit.mp4?efg=eyJxZV9ncm91cHMiOiJbXCJpZ193ZWJfZGVsaXZlcnlfdnRzX290ZlwiXSIsInZlbmNvZGVfdGFnIjoidnRzX3ZvZF91cmxnZW4uNzIwLnN0b3J5LmJhc2VsaW5lb2lsIn0&_nc_ht=instagram.ftpe7-1.fna.fbcdn.net&_nc_cat=110&vs=357364252899835_2458987290&_nc_vs=HBksFQIYRGlnX3hwdl9lcGhlbWVyYWwvNkI0QUE1MTA2MUEyMUQxRkYwNzZDMDJCMkNEOUJFQjZfdmlkZW9fZGFzaGluaXQubXA0FQACyAEAFQAYJEdFbzVUQkRYZzFBcDBRc0JBRkc4aXA2NnhWSVBicGt3QUFBRhUCAsgBACgAGAAbAYgHdXNlX29pbAExFQAAJoznmvriktc%2FFQIoAkMzLBdALgAAAAAAABgVZGFzaF9iYXNlbGluZW9pbF8xX3YxEQB16AcA&ccb=9-4&oe=62033183&oh=00_AT8DBd6KfgKSVK21_e0rMcfrfJUZdzE__a7eqzWdNQfCfg&_nc_sid=643ae9`
-        fetch(url)
-        .then(response => {
-          // if (response.ok) return new Blob([response], { type: 'video/mp4' })
-          if (response.ok) return response.blob()
-          throw new Error('Network response was not ok.')
-        })
-        .then(data => {
-          console.log(URL.createObjectURL(data))
+        // let url = props.videoSrc
+        // fetch(url)
+        // .then(response => {
+        //   // if (response.ok) return new Blob([response], { type: 'video/mp4' })
+        //   if (response.ok) return response.blob()
+        //   throw new Error('Network response was not ok.')
+        // })
+        // .then(data => {
+        //   console.log(URL.createObjectURL(data))
       // 解決手機自動播放問題 => playsinline
+      // 影片的預覽圖有跨域的問題＝＝巨北爛
+        if(props.videoSrc) {
           myPlayer.value = videojs(myVideo.value,{
-            sources:[{ src: 'https://instagram.ftpe7-1.fna.fbcdn.net/o1/v/t16/f1/m38/6B4AA51061A21D1FF076C02B2CD9BEB6_video_dashinit.mp4?efg=eyJxZV9ncm91cHMiOiJbXCJpZ193ZWJfZGVsaXZlcnlfdnRzX290ZlwiXSIsInZlbmNvZGVfdGFnIjoidnRzX3ZvZF91cmxnZW4uNzIwLnN0b3J5LmJhc2VsaW5lb2lsIn0&_nc_ht=instagram.ftpe7-1.fna.fbcdn.net&_nc_cat=110&vs=357364252899835_2458987290&_nc_vs=HBksFQIYRGlnX3hwdl9lcGhlbWVyYWwvNkI0QUE1MTA2MUEyMUQxRkYwNzZDMDJCMkNEOUJFQjZfdmlkZW9fZGFzaGluaXQubXA0FQACyAEAFQAYJEdFbzVUQkRYZzFBcDBRc0JBRkc4aXA2NnhWSVBicGt3QUFBRhUCAsgBACgAGAAbAYgHdXNlX29pbAExFQAAJoznmvriktc%2FFQIoAkMzLBdALgAAAAAAABgVZGFzaF9iYXNlbGluZW9pbF8xX3YxEQB16AcA&ccb=9-4&oe=62033183&oh=00_AT8DBd6KfgKSVK21_e0rMcfrfJUZdzE__a7eqzWdNQfCfg&_nc_sid=643ae9'}],
+            sources:[{ src: props.videoSrc}],
             loop:true,
             muted:true,
+            poster:'https://fakeimg.pl/480x854/?text=Loading',
             playsinline: true,
             width:"240px",
             height:"426px",
-            controls:true
+            controls:false
           });
           myPlayer.value.ready(function() {
 
@@ -97,7 +109,8 @@ export default {
             //   });
             // }
           });
-        });
+        // });
+        }
       }
     })
 
