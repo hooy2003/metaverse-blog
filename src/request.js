@@ -7,6 +7,26 @@ window.REQ = axios.create({
   timeout: 10000
 });
 
+const getExchangeRates = async(currency, rates)=> {
+  try {
+    const res = await REQ.request({
+      url: `https://api.coinbase.com/v2/exchange-rates?currency=`+currency,
+      method: 'GET',
+    })
+    if(res.status==200)
+      {
+        console.log('getExchangeRates'+currency+'!!!!', res.data.data.rates[rates])
+        const  contents  = res.data.data.rates[rates];
+
+        return new Promise(resolve=>resolve(contents));
+      } else{
+        return new Promise((resolve,reject)=>reject({status:res.status,data:res}));
+    }
+  }catch(e) {
+    return new Promise((resolve,reject)=>reject({status:500}));
+  }
+}
+
 const getRssFromPtt = async()=>{
   try {
     const res = await REQ.request({
@@ -133,6 +153,7 @@ const getProfileFromeIG = async()=>{
 }
 
 export default {
+  getExchangeRates,
   getRssFromPtt,
   getRssFromTwitter,
   getRssFromReddit,

@@ -11,6 +11,14 @@
       <div class="pb-4 px-2">
         <Suspense>
           <template #default>
+            <ExchangeRate />
+          </template>
+          <template #fallback>
+            <div>Rates Loading...</div>
+          </template>
+        </Suspense>
+        <Suspense>
+          <template #default>
             <Article />
           </template>
           <template #fallback>
@@ -24,11 +32,13 @@
 
 <script>
 import { onErrorCaptured } from 'vue'
+import ExchangeRate from '../components/ExchangeRate'
 import Article from '../components/Article'
 
 export default {
   name: 'Index',
   components: {
+    ExchangeRate,
     Article
   },
   setup(){

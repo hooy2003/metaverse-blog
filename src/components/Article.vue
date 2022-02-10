@@ -26,21 +26,13 @@
 import { ref } from 'vue'
 import Request from '../request'
 import ArticleModule from './utilities/ArticleModule'
-import PTTArticleModule from './utilities/PTTArticleModule'
-import TwitterArticleModule from './utilities/TwitterArticleModule'
-import RedditArticleModule from './utilities/RedditArticleModule'
-import YoutubeModule from './utilities/YoutubeModule'
 import dayjs from 'dayjs'
 import algorithm from '../algorithm'
 
 export default {
-  name: 'Form',
+  name: 'Article',
   components: {
-    ArticleModule,
-    PTTArticleModule,
-    TwitterArticleModule,
-    RedditArticleModule,
-    YoutubeModule
+    ArticleModule
   },
   async setup() {
     let allItems = ref([])
@@ -67,7 +59,6 @@ export default {
       const pttArticleList = await Request.getRssFromPtt();
 
       let pttItems = []
-
       pttArticleList.data.feed.entry.map(
         (i) => {
           if(dayjs().diff(dayjs(i.published), 'second')<86400) {
@@ -93,14 +84,20 @@ export default {
       try {
         const twitterList = await Request.getRssFromTwitter();
         const titter_name = twitterList.data.rss.channel.image.title
-        const twitterItems = [...twitterList.data.rss.channel.item].map((i) => ({
-          type: 'twitter',
-          link: i.link,
-          title: titter_name,
-          originPub: i.pubDate,
-          pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
-          content: i.description
-        }));
+
+        let twitterItems = []
+        twitterList.data.rss.channel.item.map((i)=>{
+          if(dayjs().diff(dayjs(i.pubDate), 'second')<86400) {
+            twitterItems.push({
+              type: 'twitter',
+              link: i.link,
+              title: titter_name,
+              originPub: i.pubDate,
+              pubTime: dayjs(i.pubDate).format("YYYY/MM/DD HH:mm"),
+              content: i.description
+            })
+          }
+        })
 
         console.log('twitterItems', twitterItems)
         return twitterItems
@@ -157,7 +154,6 @@ export default {
 
       return igItems
     }
-
 
     // wait await all done
     async function mergeAllItem () {
