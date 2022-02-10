@@ -33,3 +33,7 @@ npm run serve
 運行 main.py
 touch igstories.py
 index.html 運行
+
+firebase
+firebase hosting:channel:deploy preview_name
+firebase deploy
